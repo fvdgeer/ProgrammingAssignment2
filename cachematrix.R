@@ -1,15 +1,39 @@
-## Put comments here that give an overall description of what your
-## functions do
+## This is my solution for the programming task of week 2.
 
-## Write a short comment describing this function
-
-makeCacheMatrix <- function(x = matrix()) {
-
+## This function wraps a matrix with an object to cache the inverse calculation of the matrix.
+## It works in conjunction with the cacheSolve() function.
+## Example:
+##    cm <- makeCacheMatrix(c(5, 2, 0, 3), 2, 2)
+##    cacheSolve(cm)
+## The inverse of the matrix will be calculated.
+## Another call to cacheSolve(cm) will return the result taken from the cache.
+makeCacheMatrix <- function(theMatrix = matrix()) {
+    inv <- NULL
+    set <- function(aMatrix) {
+        theMatrix <<- aMatrix
+        inv <<- NULL
+    }
+    get <- function() theMatrix
+    setinv <- function(theInverse) inv <<- theInverse
+    getinv <- function() inv
+    list(set = set, get = get, setinv = setinv, getinv = getinv)
+    
 }
 
 
-## Write a short comment describing this function
-
-cacheSolve <- function(x, ...) {
-        ## Return a matrix that is the inverse of 'x'
+## This function determines the inverse of a matrix that has been wrapped with makeCacheMatrix().
+## The inverse will only be calculated once and will then be cached for later usage.
+cacheSolve <- function (cacheMatrix, ...) {
+    inv <- cacheMatrix$getinv()
+    if (is.null(inv)) {
+        m <- cacheMatrix$get()
+        inv <- solve(m, ...)
+        cacheMatrix$setinv(inv)
+        message("computed result")
+    }
+    else
+    {
+        message("cached result")
+    }
+    inv
 }
